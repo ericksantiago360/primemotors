@@ -1,0 +1,45 @@
+# Python
+__pycache__/
+*.py[cod]
+*.pyo
+*.pyd
+.Python
+
+# Entorno virtual
+venv/
+env/
+.venv/
+ENV/
+
+# Django
+*.log
+*.pot
+*.pyc
+db.sqlite3
+media/
+
+# Variables de entorno (¡muy importante!)
+.env
+.env.local
+.env.production
+
+# Archivos estáticos generados
+staticfiles/
+static_root/
+
+# Migraciones (opcional, muchos prefieren sí subirlas)
+# */migrations/
+
+# IDEs
+.vscode/
+.idea/
+*.swp
+*.swo
+
+# Sistema operativo
+.DS_Store
+Thumbs.db
+
+# Cobertura de pruebas
+.coverage
+htmlcov/
