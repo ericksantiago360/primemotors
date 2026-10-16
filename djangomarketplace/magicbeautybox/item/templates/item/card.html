@@ -1,0 +1,15 @@
+<div>
+    <a href="{% url 'item:detail' item.id %}">
+        <div>
+            {% if item.image %}
+                <img src="{{ item.image.url }}" class="rounded-t-xl">
+            {% else %}
+                <div class="h-48 bg-gray-200 rounded-t-xl"></div>
+            {% endif %}
+        </div>
+        <div class="p-6 bg-white rounded-b-xl">
+            <h2 class="text-2xl">{{ item.name }}</h2>
+            <p class="text-gray-500">precio: {{ item.price }}</p>
+        </div>
+    </a>
+</div>

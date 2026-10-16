@@ -3,33 +3,29 @@ from item.models import category, Item
 from .forms import SignupForm
 
 
-def index (request):
-    items = Item.objects.filter(is_sold = False) [0:6]
+def index(request):
+    items = Item.objects.filter(is_sold=False).order_by('-created_at')[0:6]
     categories = category.objects.all()
-    
-    return render(request, 'core/index.html' ,{
+
+    return render(request, 'core/index.html', {
         'categories': categories,
-        'items': items,  
+        'items': items,
     })
 
-def contact (request):
+def contact(request):
     return render(request, 'core/contact.html')
 
 def signup(request):
     if request.method == 'POST':
         form = SignupForm(request.POST)
-        
+
         if form.is_valid():
             form.save()
-            
-            return redirect('/login/')
+
+            return redirect('core:login')
     else:
         form = SignupForm()
-        
-    
-    return render(request,'core/signup.html',{
+
+    return render(request, 'core/signup.html', {
         'form': form
     })
-    
-     
-

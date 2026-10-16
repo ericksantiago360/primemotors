@@ -1,30 +1,31 @@
 # djangomarketplace
 
+## Ejecutar en local
 
-ls
+```bash
+python -m venv env
+source env/bin/activate
+pip install -r ../requirements.txt
+cp ../.env.example ../.env   # y rellena SECRET_KEY
 cd magicbeautybox
+python manage.py migrate
+python manage.py runserver
+```
 
-1 #activar  enviroment:
+Abre http://127.0.0.1:8000/
 
- source env/bin/activate  
- 
-2 # acceder al proyecto:
- cd magicbeautybox  
+## Ejecutar con Docker
 
-3# ejecutar el servidor
+Desde la raíz del repositorio:
 
- python  manage.py runserver
+```bash
+cp .env.example .env   # y rellena SECRET_KEY
+docker compose up --build
+```
 
+## Tests
 
-http://127.0.0.1:8000/login
-
- username
- ericksantiago
- password:
- noentro01 
-
-
-
-
- 
-
+```bash
+cd magicbeautybox
+python manage.py test
+```
