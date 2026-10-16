@@ -1,7 +1,6 @@
 services:
   web:
     build: .
-    command: python djangomarketplace/magicbeautybox/manage.py runserver 0.0.0.0:8000
     volumes:
       - .:/app
     ports:

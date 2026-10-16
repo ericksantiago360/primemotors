@@ -17,5 +17,6 @@ COPY . .
 # Expone el puerto
 EXPOSE 8000
 
-# Comando para iniciar el servidor
-CMD ["python", "djangomarketplace/magicbeautybox/manage.py", "runserver", "0.0.0.0:8000"]
+# Aplica migraciones, recopila estáticos e inicia Gunicorn
+WORKDIR /app/djangomarketplace/magicbeautybox
+CMD ["sh", "-c", "python manage.py migrate --noinput && python manage.py collectstatic --noinput && gunicorn magicbeautybox.wsgi:application --bind 0.0.0.0:8000 --workers 3"]
