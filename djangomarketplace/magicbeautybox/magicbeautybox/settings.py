@@ -24,6 +24,9 @@ if not SECRET_KEY:
 
 DEBUG = os.getenv('DEBUG', 'False') == 'True'
 
+ANTHROPIC_API_KEY = os.getenv('ANTHROPIC_API_KEY', '')
+CHATBOT_MODEL = os.getenv('CHATBOT_MODEL', 'claude-opus-5-5')
+
 ALLOWED_HOSTS = [h.strip() for h in os.getenv('ALLOWED_HOSTS', 'localhost,127.0.0.1').split(',') if h.strip()]
 
 LOGIN_URL = '/login/'
@@ -37,6 +40,7 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
+    'chatbot',
     'conversation',
     'core',
     'dashboard',

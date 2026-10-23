@@ -53,5 +53,9 @@
                 </ul>
             </div>
         </footer>
+
+        {% if request.user.is_authenticated %}
+            {% include 'chatbot/widget.html' %}
+        {% endif %}
     </body>
 </html>

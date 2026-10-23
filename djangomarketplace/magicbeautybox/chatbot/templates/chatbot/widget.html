@@ -1,0 +1,79 @@
+<div class="fixed bottom-6 right-6 z-50">
+    <button type="button" id="chatbot-toggle" class="px-6 py-3 text-lg font-semibold bg-teal-500 text-white rounded-xl shadow-lg hover:bg-teal-700">chat</button>
+
+    <div id="chatbot-panel" class="hidden mt-3 w-[calc(100vw-2rem)] sm:w-96 flex flex-col bg-white border border-gray-200 rounded-xl shadow-xl">
+        <div class="px-4 py-3 font-semibold bg-gray-100 rounded-t-xl">asistente AUTOEXPERTO</div>
+
+        <div id="chatbot-messages" class="h-80 overflow-y-auto p-4 space-y-3 text-sm"></div>
+
+        <form id="chatbot-form" class="flex gap-2 p-3 border-t border-gray-200">
+            {% csrf_token %}
+            <input id="chatbot-input" type="text" maxlength="1000" placeholder="escribe tu pregunta" class="flex-1 min-w-0 px-3 py-2 border rounded-xl">
+            <button type="submit" class="px-4 py-2 font-semibold bg-teal-500 text-white rounded-xl hover:bg-teal-700">enviar</button>
+        </form>
+    </div>
+</div>
+
+<script>
+(function () {
+    const endpoint = "{% url 'chatbot:chat' %}";
+    const toggle = document.getElementById('chatbot-toggle');
+    const panel = document.getElementById('chatbot-panel');
+    const log = document.getElementById('chatbot-messages');
+    const form = document.getElementById('chatbot-form');
+    const input = document.getElementById('chatbot-input');
+    const csrfToken = form.querySelector('input[name="csrfmiddlewaretoken"]').value;
+    const history = [];
+    let busy = false;
+
+    function addBubble(role, text) {
+        const bubble = document.createElement('div');
+        bubble.className = role === 'user'
+            ? 'ml-auto max-w-[80%] px-3 py-2 bg-teal-500 text-white rounded-xl'
+            : 'max-w-[80%] px-3 py-2 bg-gray-100 rounded-xl';
+        bubble.textContent = text;
+        log.appendChild(bubble);
+        log.scrollTop = log.scrollHeight;
+        return bubble;
+    }
+
+    toggle.addEventListener('click', function () {
+        panel.classList.toggle('hidden');
+        if (!panel.classList.contains('hidden')) {
+            input.focus();
+        }
+    });
+
+    form.addEventListener('submit', async function (event) {
+        event.preventDefault();
+        const text = input.value.trim();
+        if (!text || busy) {
+            return;
+        }
+
+        busy = true;
+        input.value = '';
+        addBubble('user', text);
+        const pending = addBubble('assistant', '...');
+
+        try {
+            const response = await fetch(endpoint, {
+                method: 'POST',
+                headers: {'Content-Type': 'application/json', 'X-CSRFToken': csrfToken},
+                body: JSON.stringify({message: text, history: history}),
+            });
+            const data = await response.json();
+            if (!response.ok) {
+                throw new Error(data.error);
+            }
+            pending.textContent = data.reply;
+            history.push({role: 'user', content: text}, {role: 'assistant', content: data.reply});
+        } catch (error) {
+            pending.textContent = 'No pude responder en este momento. Intenta de nuevo.';
+        } finally {
+            busy = false;
+            log.scrollTop = log.scrollHeight;
+        }
+    });
+})();
+</script>
