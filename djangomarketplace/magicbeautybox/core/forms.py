@@ -35,3 +35,9 @@ class SignupForm(UserCreationForm):
         'placeholder': 'repite la contraseña',
         'class': INPUT_CLASSES
     }))
+
+    def clean_email(self):
+        email = self.cleaned_data['email']
+        if User.objects.filter(email__iexact=email).exists():
+            raise forms.ValidationError('Ya existe una cuenta con este correo electrónico.')
+        return email
