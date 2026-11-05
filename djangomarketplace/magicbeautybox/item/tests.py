@@ -1,8 +1,12 @@
+import os
+import shutil
+import tempfile
 from decimal import Decimal
 
 from django.contrib.auth.models import User
 from django.core.exceptions import ValidationError
-from django.test import TestCase
+from django.core.files.uploadedfile import SimpleUploadedFile
+from django.test import TestCase, override_settings
 from django.urls import reverse
 
 from .forms import NewItemForm
@@ -110,3 +114,51 @@ class ItemPriceTests(TestCase):
 
         self.assertFalse(form.is_valid())
         self.assertIn('price', form.errors)
+
+
+class ItemImageFileTests(TestCase):
+    def setUp(self):
+        self.media_root = tempfile.mkdtemp()
+        self.override = override_settings(MEDIA_ROOT=self.media_root)
+        self.override.enable()
+        self.owner = User.objects.create_user('owner', password='pass12345')
+        self.category = category.objects.create(name='Sedan')
+
+    def tearDown(self):
+        self.override.disable()
+        shutil.rmtree(self.media_root, ignore_errors=True)
+
+    def make_item(self, filename):
+        image = SimpleUploadedFile(filename, b'contenido', content_type='image/jpeg')
+        return Item.objects.create(category=self.category, name='Civic', price=100, created_by=self.owner, image=image)
+
+    def file_exists(self, name):
+        return os.path.exists(os.path.join(self.media_root, name))
+
+    def test_deleting_item_removes_image_file(self):
+        item = self.make_item('auto.jpg')
+        path = item.image.name
+        self.assertTrue(self.file_exists(path))
+
+        item.delete()
+
+        self.assertFalse(self.file_exists(path))
+
+    def test_replacing_image_removes_old_file(self):
+        item = self.make_item('viejo.jpg')
+        old_path = item.image.name
+
+        item.image = SimpleUploadedFile('nuevo.jpg', b'otro', content_type='image/jpeg')
+        item.save()
+
+        self.assertFalse(self.file_exists(old_path))
+        self.assertTrue(self.file_exists(item.image.name))
+
+    def test_saving_without_changing_image_keeps_file(self):
+        item = self.make_item('igual.jpg')
+        path = item.image.name
+
+        item.name = 'Accord'
+        item.save()
+
+        self.assertTrue(self.file_exists(path))
