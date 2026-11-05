@@ -1,13 +1,15 @@
 services:
   web:
     build: .
+    env_file:
+      - .env
+    environment:
+      SQLITE_PATH: /app/data/db.sqlite3
     volumes:
-      - .:/app
+      - db_data:/app/data
       - media_data:/app/djangomarketplace/magicbeautybox/media
     expose:
       - "8000"
-    env_file:
-      - .env
 
   nginx:
     image: nginx:1.27-alpine
@@ -20,4 +22,5 @@ services:
       - media_data:/var/www/media:ro
 
 volumes:
+  db_data:
   media_data:

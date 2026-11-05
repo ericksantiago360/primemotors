@@ -1,0 +1,7 @@
+# Desarrollo: monta el código para ver los cambios sin reconstruir la imagen.
+# Docker Compose carga este archivo automáticamente junto con docker-compose.yml.
+# En producción no se usa: basta con `docker compose -f docker-compose.yml up -d`.
+services:
+  web:
+    volumes:
+      - .:/app

@@ -23,7 +23,14 @@ cp .env.example .env   # y rellena SECRET_KEY
 docker compose up --build
 ```
 
-Servicios: `web` (Gunicorn, interno) y `nginx` (puerto 8000 del host). Con `DEBUG=False` la app exige HTTPS (`SECURE_SSL_REDIRECT`), así que para probar en local usa `DEBUG=True` o pon un proxy TLS delante.
+Servicios: `web` (Gunicorn, interno) y `nginx` (puerto 8000 del host).
+
+- **Desarrollo:** `docker compose up --build` carga también `docker-compose.override.yml`, que monta el código para ver los cambios sin reconstruir.
+- **Producción:** `docker compose -f docker-compose.yml up -d --build` (sin el override). El código va dentro de la imagen.
+
+Los datos viven en volúmenes con nombre: `db_data` (base SQLite, en `/app/data/db.sqlite3`) y `media_data` (imágenes). Borrar contenedores no los elimina; `docker compose down -v` sí. La imagen corre como usuario sin privilegios `app`.
+
+Si ya tenías datos en `magicbeautybox/db.sqlite3`, cópialos al volumen una vez antes de usar el stack nuevo. Con `DEBUG=False` la app exige HTTPS (`SECURE_SSL_REDIRECT`), así que para probar en local usa `DEBUG=True` o pon un proxy TLS delante.
 
 ## Imágenes subidas (media/)
 
