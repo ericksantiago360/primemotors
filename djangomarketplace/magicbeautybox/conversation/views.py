@@ -43,7 +43,11 @@ def new_conversation(request, item_pk):
 
 @login_required
 def inbox(request):
-    conversations = Conversation.objects.filter(members=request.user)
+    conversations = (
+        Conversation.objects.filter(members=request.user)
+        .select_related('item')
+        .prefetch_related('members')
+    )
 
     return render(request, 'conversation/inbox.html', {
         'conversations': conversations

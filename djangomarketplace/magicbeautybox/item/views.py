@@ -14,7 +14,7 @@ def items(request):
     except ValueError:
         category_id = 0
     categories = category.objects.all()
-    items = Item.objects.filter(is_sold=False)
+    items = Item.objects.filter(is_sold=False).select_related('created_by')
 
     if category_id:
         items = items.filter(category_id=category_id)
@@ -31,8 +31,8 @@ def items(request):
 
 
 def detail(request, pk):
-    item = get_object_or_404(Item, pk=pk)
-    related_items = Item.objects.filter(category=item.category, is_sold=False).exclude(pk=pk)[0:3]
+    item = get_object_or_404(Item.objects.select_related('created_by'), pk=pk)
+    related_items = Item.objects.filter(category=item.category, is_sold=False).select_related('created_by').exclude(pk=pk)[0:3]
 
     return render(request, 'item/detail.html', {
         'item': item,

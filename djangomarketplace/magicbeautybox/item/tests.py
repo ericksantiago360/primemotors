@@ -20,6 +20,14 @@ class ItemViewsTests(TestCase):
         for url in [reverse('core:index'), reverse('item:items'), reverse('item:detail', args=[self.item.pk])]:
             self.assertEqual(self.client.get(url).status_code, 200, url)
 
+    def test_index_counts_only_unsold_items_per_category(self):
+        Item.objects.create(category=self.category, name='Vendido', price=100, created_by=self.owner, is_sold=True)
+
+        response = self.client.get(reverse('core:index'))
+
+        self.assertContains(response, '1 items')
+        self.assertNotContains(response, '2 items')
+
     def test_items_invalid_category_does_not_crash(self):
         response = self.client.get(reverse('item:items'), {'category': 'abc'})
         self.assertEqual(response.status_code, 200)
