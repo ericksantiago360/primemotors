@@ -43,6 +43,17 @@ Con Docker, nginx es el único servicio publicado: entra por `http://localhost:8
 
 Si respaldas el sitio, respalda el volumen `media_data` junto con la base de datos.
 
+## Chatbot (Claude)
+
+El widget de chat (esquina inferior derecha) solo aparece para usuarios con sesión iniciada. Llama a `POST /chatbot/chat/`, que consulta la API de Claude con el inventario de vehículos disponibles. Sin sesión responde 401.
+
+Configura en `.env`:
+
+- `ANTHROPIC_API_KEY`: tu API key de Anthropic. Sin ella el chatbot responde con error 503.
+- `CHATBOT_MODEL` (opcional): por defecto `claude-opus-5-5`.
+
+Pruebas: `python manage.py test chatbot`
+
 ## Tests
 
 ```bash
