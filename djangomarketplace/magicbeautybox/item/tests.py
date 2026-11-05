@@ -33,6 +33,24 @@ class ItemViewsTests(TestCase):
         self.client.post(reverse('item:delete', args=[self.item.pk]))
         self.assertFalse(Item.objects.filter(pk=self.item.pk).exists())
 
+    def test_sold_item_shows_badge_and_hides_contact_seller(self):
+        self.item.is_sold = True
+        self.item.save()
+        self.client.login(username='other', password='pass12345')
+
+        response = self.client.get(reverse('item:detail', args=[self.item.pk]))
+
+        self.assertContains(response, 'vendido')
+        self.assertNotContains(response, reverse('conversation:new', args=[self.item.pk]))
+
+    def test_available_item_shows_contact_seller(self):
+        self.client.login(username='other', password='pass12345')
+
+        response = self.client.get(reverse('item:detail', args=[self.item.pk]))
+
+        self.assertNotContains(response, 'vendido')
+        self.assertContains(response, reverse('conversation:new', args=[self.item.pk]))
+
     def test_cannot_delete_other_users_item(self):
         self.client.login(username='other', password='pass12345')
         response = self.client.post(reverse('item:delete', args=[self.item.pk]))

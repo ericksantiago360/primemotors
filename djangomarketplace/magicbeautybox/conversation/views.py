@@ -13,6 +13,9 @@ def new_conversation(request, item_pk):
     if item.created_by == request.user:
         return redirect('dashboard:index')
 
+    if item.is_sold:
+        return redirect('item:detail', pk=item.pk)
+
     conversation = Conversation.objects.filter(item=item, members=request.user).first()
 
     if conversation:
