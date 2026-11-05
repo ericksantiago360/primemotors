@@ -37,6 +37,18 @@
                     {% include 'item/card.html' %}
                 {% endfor %}
             </div>
+
+            {% if page_obj.paginator.num_pages > 1 %}
+                <nav class="mt-6 flex items-center justify-center gap-4 text-lg">
+                    {% if page_obj.has_previous %}
+                        <a class="px-4 py-2 bg-white rounded-xl" href="?{{ filter_params }}&amp;page={{ page_obj.previous_page_number }}">anterior</a>
+                    {% endif %}
+                    <span>página {{ page_obj.number }} de {{ page_obj.paginator.num_pages }}</span>
+                    {% if page_obj.has_next %}
+                        <a class="px-4 py-2 bg-white rounded-xl" href="?{{ filter_params }}&amp;page={{ page_obj.next_page_number }}">siguiente</a>
+                    {% endif %}
+                </nav>
+            {% endif %}
         </div>
     </div>
 {% endblock %}

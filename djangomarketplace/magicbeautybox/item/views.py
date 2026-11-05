@@ -1,4 +1,7 @@
+from urllib.parse import urlencode
+
 from django.contrib.auth.decorators import login_required
+from django.core.paginator import Paginator
 from django.db.models import Q
 from django.shortcuts import render, get_object_or_404, redirect
 from django.views.decorators.http import require_POST
@@ -7,6 +10,9 @@ from .forms import NewItemForm, EditItemForm
 
 from .models import category, Item
 
+ITEMS_PER_PAGE = 12
+
+
 def items(request):
     query = request.GET.get('query', '')
     try:
@@ -14,7 +20,7 @@ def items(request):
     except ValueError:
         category_id = 0
     categories = category.objects.all()
-    items = Item.objects.filter(is_sold=False).select_related('created_by')
+    items = Item.objects.filter(is_sold=False).select_related('created_by').order_by('-created_at', '-pk')
 
     if category_id:
         items = items.filter(category_id=category_id)
@@ -22,8 +28,16 @@ def items(request):
     if query:
         items = items.filter(Q(name__icontains=query) | Q(description__icontains=query))
 
+    paginator = Paginator(items, ITEMS_PER_PAGE)
+    page_obj = paginator.get_page(request.GET.get('page'))
+
+    # Filtros para los enlaces de paginación (sin 'page', que se agrega en la plantilla)
+    filter_params = urlencode({'query': query, 'category': category_id or ''})
+
     return render(request, 'item/items.html', {
-        'items': items,
+        'items': page_obj.object_list,
+        'page_obj': page_obj,
+        'filter_params': filter_params,
         'query': query,
         'categories': categories,
         'category_id': category_id,
