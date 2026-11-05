@@ -1,9 +1,9 @@
 {% extends 'core/base.html' %}
 
-{% block title %}Conversation{% endblock %}
+{% block title %}Conversación{% endblock %}
 
 {% block content %}
-<h1 class="mb-6 text-3xl">Conversation</h1>
+<h1 class="mb-6 text-3xl">Conversación</h1>
 
 <div class="space-y-6">
     {% for message in conversation.messages.all %}
@@ -21,6 +21,6 @@
 
     {{ form.as_p }}
 
-    <button class="py-4 px-8 text-lg bg-teal-500 hover:bg-teal-700 rounded-xl text-white">send</button>
+    <button class="py-4 px-8 text-lg bg-teal-500 hover:bg-teal-700 rounded-xl text-white">enviar</button>
 </form>
 {% endblock %}

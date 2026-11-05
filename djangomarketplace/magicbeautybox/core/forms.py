@@ -6,11 +6,11 @@ INPUT_CLASSES = 'w-full py-4 px-6 rounded-xl'
 
 class loginForm(AuthenticationForm):
     username = forms.CharField(widget=forms.TextInput(attrs={
-        'placeholder': 'your username',
+        'placeholder': 'tu usuario',
         'class': INPUT_CLASSES
     }))
     password = forms.CharField(widget=forms.PasswordInput(attrs={
-        'placeholder': 'your password',
+        'placeholder': 'tu contraseña',
         'class': INPUT_CLASSES
     }))
 
@@ -20,18 +20,18 @@ class SignupForm(UserCreationForm):
         fields = ('username', 'email', 'password1', 'password2')
 
     username = forms.CharField(widget=forms.TextInput(attrs={
-        'placeholder': 'your username',
+        'placeholder': 'tu usuario',
         'class': INPUT_CLASSES
     }))
     email = forms.EmailField(required=True, widget=forms.EmailInput(attrs={
-        'placeholder': 'your e-mail',
+        'placeholder': 'tu correo electrónico',
         'class': INPUT_CLASSES
     }))
     password1 = forms.CharField(widget=forms.PasswordInput(attrs={
-        'placeholder': 'your password',
+        'placeholder': 'tu contraseña',
         'class': INPUT_CLASSES
     }))
     password2 = forms.CharField(widget=forms.PasswordInput(attrs={
-        'placeholder': 'repeat password',
+        'placeholder': 'repite la contraseña',
         'class': INPUT_CLASSES
     }))

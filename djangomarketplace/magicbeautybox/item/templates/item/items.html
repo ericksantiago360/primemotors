@@ -1,18 +1,18 @@
 {% extends 'core/base.html' %}
 
-{% block title %}Items{% endblock %}
+{% block title %}Artículos{% endblock %}
 
 {% block content %}
     <div class="pb-6 grid grid-cols-4 gap-4 bg-gray-100">
         <div class="col-span-1">
             <form method="get" action="{% url 'item:items' %}">
                 <input name="query" class="w-full py-4 px-6 border rounded-xl" type="text" value="{{ query }}" placeholder="encontrar artículo o producto">
-                <button class="mt-2 py-4 px-8 text-lg bg-teal-500 text-white rounded-xl">Search</button>
+                <button class="mt-2 py-4 px-8 text-lg bg-teal-500 text-white rounded-xl">Buscar</button>
             </form>
 
             <hr class="my-6">
 
-            <p class="font-semibold">Categories</p>
+            <p class="font-semibold">Categorías</p>
 
             <ul>
                 {% for category in categories %}
@@ -24,10 +24,10 @@
 
             <hr class="my-6">
 
-            <p class="font-semibold">Clear filters</p>
+            <p class="font-semibold">Limpiar filtros</p>
 
             <ul>
-                <li><a href="{% url 'item:items' %}" class="mt-2 py-4 px-8 inline-block bg-yellow-500 text-lg rounded-xl text-white">clear filter</a></li>
+                <li><a href="{% url 'item:items' %}" class="mt-2 py-4 px-8 inline-block bg-yellow-500 text-lg rounded-xl text-white">limpiar filtro</a></li>
             </ul>
         </div>
 

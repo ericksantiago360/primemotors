@@ -18,6 +18,13 @@ class NewItemForm(forms.ModelForm):
     class Meta:
         model = Item
         fields =('category', 'name', 'description', 'price', 'image', )
+        labels = {
+            'category': 'categoría',
+            'name': 'nombre',
+            'description': 'descripción',
+            'price': 'precio',
+            'image': 'imagen',
+        }
         widgets = {
             'category' : forms.Select(attrs={
                 'class': INPUT_CLASSES
@@ -43,6 +50,14 @@ class EditItemForm(forms.ModelForm):
     class Meta:
         model = Item
         fields =('category', 'name', 'description', 'price', 'image','is_sold')
+        labels = {
+            'category': 'categoría',
+            'name': 'nombre',
+            'description': 'descripción',
+            'price': 'precio',
+            'image': 'imagen',
+            'is_sold': 'vendido',
+        }
         widgets = {
             'category' : forms.Select(attrs={
                 'class': INPUT_CLASSES

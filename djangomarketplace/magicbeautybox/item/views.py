@@ -69,7 +69,7 @@ def new(request):
 
     return render(request, 'item/form.html', {
         'form': form,
-        'title': 'New item',
+        'title': 'Nuevo artículo',
     })
 
 @login_required
@@ -88,7 +88,7 @@ def edit(request, pk):
 
     return render(request, 'item/form.html', {
         'form': form,
-        'title': 'Edit item',
+        'title': 'Editar artículo',
     })
 
 

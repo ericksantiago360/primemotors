@@ -31,8 +31,8 @@ class ItemViewsTests(TestCase):
 
         response = self.client.get(reverse('core:index'))
 
-        self.assertContains(response, '1 items')
-        self.assertNotContains(response, '2 items')
+        self.assertContains(response, '1 artículos')
+        self.assertNotContains(response, '2 artículos')
 
     def test_items_invalid_category_does_not_crash(self):
         response = self.client.get(reverse('item:items'), {'category': 'abc'})
