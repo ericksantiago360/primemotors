@@ -3,7 +3,21 @@ services:
     build: .
     volumes:
       - .:/app
-    ports:
-      - "8000:8000"
+      - media_data:/app/djangomarketplace/magicbeautybox/media
+    expose:
+      - "8000"
     env_file:
       - .env
+
+  nginx:
+    image: nginx:1.27-alpine
+    depends_on:
+      - web
+    ports:
+      - "8000:80"
+    volumes:
+      - ./nginx/default.conf:/etc/nginx/conf.d/default.conf:ro
+      - media_data:/var/www/media:ro
+
+volumes:
+  media_data:

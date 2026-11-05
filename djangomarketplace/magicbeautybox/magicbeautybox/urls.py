@@ -25,5 +25,9 @@ urlpatterns = [
     path('inbox/', include('conversation.urls')),
     path('chatbot/', include('chatbot.urls')),
     path('admin/', admin.site.urls),
-] + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
+]
+
+# En producción (DEBUG=False) nginx sirve /media/; Django solo lo hace en desarrollo.
+if settings.DEBUG:
+    urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
 
