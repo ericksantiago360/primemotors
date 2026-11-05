@@ -82,6 +82,43 @@ class ItemViewsTests(TestCase):
         self.item.refresh_from_db()
         self.assertEqual(self.item.category, other_cat)
 
+    def test_owner_can_edit_item(self):
+        self.client.login(username='owner', password='pass12345')
+        url = reverse('item:edit', args=[self.item.pk])
+
+        self.assertEqual(self.client.get(url).status_code, 200)
+        self.client.post(url, {
+            'category': self.category.pk,
+            'name': 'Accord',
+            'description': '',
+            'price': '100',
+        })
+
+        self.item.refresh_from_db()
+        self.assertEqual(self.item.name, 'Accord')
+
+    def test_other_user_cannot_edit_item(self):
+        self.client.login(username='other', password='pass12345')
+        url = reverse('item:edit', args=[self.item.pk])
+
+        self.assertEqual(self.client.get(url).status_code, 404)
+        response = self.client.post(url, {
+            'category': self.category.pk,
+            'name': 'Hackeado',
+            'description': '',
+            'price': '1',
+        })
+
+        self.assertEqual(response.status_code, 404)
+        self.item.refresh_from_db()
+        self.assertEqual(self.item.name, 'Civic')
+
+    def test_anonymous_user_is_sent_to_login_when_editing(self):
+        response = self.client.get(reverse('item:edit', args=[self.item.pk]))
+
+        self.assertEqual(response.status_code, 302)
+        self.assertIn(reverse('core:login'), response['Location'])
+
     def test_cannot_delete_other_users_item(self):
         self.client.login(username='other', password='pass12345')
         response = self.client.post(reverse('item:delete', args=[self.item.pk]))
