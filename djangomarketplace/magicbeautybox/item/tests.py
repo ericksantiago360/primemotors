@@ -51,6 +51,23 @@ class ItemViewsTests(TestCase):
         self.assertNotContains(response, 'vendido')
         self.assertContains(response, reverse('conversation:new', args=[self.item.pk]))
 
+    def test_owner_can_change_category_when_editing(self):
+        other_cat = category.objects.create(name='SUV')
+        self.client.login(username='owner', password='pass12345')
+        url = reverse('item:edit', args=[self.item.pk])
+
+        self.assertContains(self.client.get(url), f'<option value="{other_cat.pk}">SUV</option>')
+        self.client.post(url, {
+            'category': other_cat.pk,
+            'name': 'Civic',
+            'description': '',
+            'price': '100',
+            'is_sold': '',
+        })
+
+        self.item.refresh_from_db()
+        self.assertEqual(self.item.category, other_cat)
+
     def test_cannot_delete_other_users_item(self):
         self.client.login(username='other', password='pass12345')
         response = self.client.post(reverse('item:delete', args=[self.item.pk]))
