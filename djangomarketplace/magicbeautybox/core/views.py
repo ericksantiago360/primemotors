@@ -1,11 +1,12 @@
+from django.db.models import Count, Q
 from django.shortcuts import render, redirect
 from item.models import category, Item
 from .forms import SignupForm
 
 
 def index(request):
-    items = Item.objects.filter(is_sold=False).order_by('-created_at')[0:6]
-    categories = category.objects.all()
+    items = Item.objects.filter(is_sold=False).select_related('created_by').order_by('-created_at')[0:6]
+    categories = category.objects.annotate(num_items=Count('items', filter=Q(items__is_sold=False)))
 
     return render(request, 'core/index.html', {
         'categories': categories,

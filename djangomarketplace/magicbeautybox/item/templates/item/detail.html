@@ -13,35 +13,37 @@
     </div>
 
     <div class="col-span-2 p-6 bg-gray-100 rounded-xl">
-        <h1 class="mb-6 text-3xl">{{ item.name }}</h1>
-        <p class="text-gray-500"><strong>price:</strong> {{ item.price }}</p>
-        <p class="text-gray-500"><strong>seller:</strong> {{ item.created_by.username }}</p>
+        <h1 class="mb-6 text-3xl">{{ item.name }}
+            {% if item.is_sold %}<span class="ml-3 align-middle px-3 py-1 text-base font-semibold bg-red-500 text-white rounded-xl">vendido</span>{% endif %}
+        </h1>
+        <p class="text-gray-500"><strong>precio:</strong> {{ item.price }}</p>
+        <p class="text-gray-500"><strong>vendedor:</strong> {{ item.created_by.username }}</p>
 
         {% if item.description %}
             <p class="text-gray-700">
-                <strong class="text-gray-500">description:</strong>
+                <strong class="text-gray-500">descripción:</strong>
                 {{ item.description }}
             </p>
         {% endif %}
 
         {% if request.user == item.created_by %}
             <div class="mt-6 p-6 bg-white rounded-xl">
-                <p>this is your item</p>
-                <a href="{% url 'item:edit' item.id %}" class="inline-block mt-6 px-6 py-3 text-lg font-semibold bg-teal-500 text-white rounded-xl">edit</a>
+                <p>este es tu artículo</p>
+                <a href="{% url 'item:edit' item.id %}" class="inline-block mt-6 px-6 py-3 text-lg font-semibold bg-teal-500 text-white rounded-xl">editar</a>
 
                 <form method="post" action="{% url 'item:delete' item.id %}" class="inline-block" onsubmit="return confirm('¿Seguro que quieres borrar este artículo?');">
                     {% csrf_token %}
-                    <button class="mt-6 px-6 py-3 text-lg font-semibold bg-red-500 text-white rounded-xl">Delete</button>
+                    <button class="mt-6 px-6 py-3 text-lg font-semibold bg-red-500 text-white rounded-xl">Eliminar</button>
                 </form>
             </div>
-        {% else %}
-            <a href="{% url 'conversation:new' item.id %}" class="inline-block mt-6 px-6 py-3 text-lg font-semibold bg-teal-500 text-white rounded-xl">contact seller</a>
+        {% elif not item.is_sold %}
+            <a href="{% url 'conversation:new' item.id %}" class="inline-block mt-6 px-6 py-3 text-lg font-semibold bg-teal-500 text-white rounded-xl">contactar al vendedor</a>
         {% endif %}
     </div>
 </div>
 
 <div class="mt-6 px-6 py-12 bg-gray-100 rounded-xl">
-    <h2 class="mb-12 text-2xl text-center">related items</h2>
+    <h2 class="mb-12 text-2xl text-center">artículos relacionados</h2>
 
     <div class="grid grid-cols-3 gap-3">
         {% for item in related_items %}

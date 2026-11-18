@@ -24,6 +24,16 @@ class ConversationViewsTests(TestCase):
 
         self.assertEqual(self.client.get(reverse('conversation:inbox')).status_code, 200)
 
+    def test_new_conversation_redirects_to_item_when_sold(self):
+        self.item.is_sold = True
+        self.item.save()
+
+        self.client.login(username='buyer', password='pass12345')
+        response = self.client.post(reverse('conversation:new', args=[self.item.pk]), {'content': 'Hola'})
+
+        self.assertRedirects(response, reverse('item:detail', args=[self.item.pk]))
+        self.assertFalse(Conversation.objects.exists())
+
     def test_non_member_gets_404(self):
         conversation = Conversation.objects.create(item=self.item)
         conversation.members.add(self.seller, self.buyer)

@@ -27,6 +27,20 @@ class SignupTests(TestCase):
         self.assertEqual(response.status_code, 200)
         self.assertFalse(User.objects.filter(username='nuevo').exists())
 
+    def test_signup_rejects_duplicate_email_ignoring_case(self):
+        User.objects.create_user('existente', email='Ana@Example.com', password='pass12345')
+
+        response = self.client.post(reverse('core:signup'), {
+            'username': 'nueva',
+            'email': 'ana@example.COM',
+            'password1': 'UnaClave-Segura123',
+            'password2': 'UnaClave-Segura123',
+        })
+
+        self.assertEqual(response.status_code, 200)
+        self.assertFalse(User.objects.filter(username='nueva').exists())
+        self.assertContains(response, 'Ya existe una cuenta')
+
     def test_logout(self):
         User.objects.create_user('u', password='pass12345')
         self.client.login(username='u', password='pass12345')

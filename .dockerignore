@@ -9,3 +9,7 @@
 **/*.pyc
 .DS_Store
 **/staticfiles/
+
+# Datos persistentes: van en volúmenes con nombre (ver docker-compose.yml)
+**/media/
+**/db.sqlite3

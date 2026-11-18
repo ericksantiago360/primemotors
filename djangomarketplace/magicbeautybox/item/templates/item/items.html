@@ -1,18 +1,18 @@
 {% extends 'core/base.html' %}
 
-{% block title %}Items{% endblock %}
+{% block title %}Artículos{% endblock %}
 
 {% block content %}
     <div class="pb-6 grid grid-cols-4 gap-4 bg-gray-100">
         <div class="col-span-1">
             <form method="get" action="{% url 'item:items' %}">
                 <input name="query" class="w-full py-4 px-6 border rounded-xl" type="text" value="{{ query }}" placeholder="encontrar artículo o producto">
-                <button class="mt-2 py-4 px-8 text-lg bg-teal-500 text-white rounded-xl">Search</button>
+                <button class="mt-2 py-4 px-8 text-lg bg-teal-500 text-white rounded-xl">Buscar</button>
             </form>
 
             <hr class="my-6">
 
-            <p class="font-semibold">Categories</p>
+            <p class="font-semibold">Categorías</p>
 
             <ul>
                 {% for category in categories %}
@@ -24,10 +24,10 @@
 
             <hr class="my-6">
 
-            <p class="font-semibold">Clear filters</p>
+            <p class="font-semibold">Limpiar filtros</p>
 
             <ul>
-                <li><a href="{% url 'item:items' %}" class="mt-2 py-4 px-8 inline-block bg-yellow-500 text-lg rounded-xl text-white">clear filter</a></li>
+                <li><a href="{% url 'item:items' %}" class="mt-2 py-4 px-8 inline-block bg-yellow-500 text-lg rounded-xl text-white">limpiar filtro</a></li>
             </ul>
         </div>
 
@@ -37,6 +37,18 @@
                     {% include 'item/card.html' %}
                 {% endfor %}
             </div>
+
+            {% if page_obj.paginator.num_pages > 1 %}
+                <nav class="mt-6 flex items-center justify-center gap-4 text-lg">
+                    {% if page_obj.has_previous %}
+                        <a class="px-4 py-2 bg-white rounded-xl" href="?{{ filter_params }}&amp;page={{ page_obj.previous_page_number }}">anterior</a>
+                    {% endif %}
+                    <span>página {{ page_obj.number }} de {{ page_obj.paginator.num_pages }}</span>
+                    {% if page_obj.has_next %}
+                        <a class="px-4 py-2 bg-white rounded-xl" href="?{{ filter_params }}&amp;page={{ page_obj.next_page_number }}">siguiente</a>
+                    {% endif %}
+                </nav>
+            {% endif %}
         </div>
     </div>
 {% endblock %}
